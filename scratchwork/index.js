@@ -1,16 +1,10 @@
-'use strict'
-const api = require('express').Router()
-const db = require('../db')
+const express = require('express');
+const router = express.Router();
 const User = require('../db/models/user')
 const Campus = require('../db/models/campus')
 
-// If you aren't getting to this object, but rather the index.html (something with a joke) your path is wrong.
-	// I know this because we automatically send index.html for all requests that don't make sense in our backend.
-	// Ideally you would have something to handle this, so if you have time try that out!
-
-api.get('/hello', (req, res,next) => res.send({hello: 'world'}))
 //get routes
-api.get('/campuses/:campusId', function(req,res,next){
+router.get('api/campuses/:campusId', function(req,res,next){
 	let id = req.params.campusId
 	Campus.findById(id)
 	.then(function(campus){
@@ -21,14 +15,14 @@ api.get('/campuses/:campusId', function(req,res,next){
 	})
 	.catch(next);
 })
-api.get('/campuses', function(req,res,next){
+router.get('api/campuses', function(req,res,next){
 	Campus.findAll({})
 	.then(function(campuses){
 		res.json(campuses)
 	})
 	.catch(next);
 })
-api.get('/students/:studentId', function(req,res,next){
+router.get('api/students/:studentId', function(req,res,next){
 	let id = req.params.studentId
 	User.findById(id)
 	.then(function(student){
@@ -40,7 +34,7 @@ api.get('/students/:studentId', function(req,res,next){
 	.catch(next);
 
 })
-api.get('/students', function(req, res, next){
+router.get('api/students', function(req, res, next){
 	User.findAll({})
 	.then(function(students){
 		res.json(students);
@@ -48,32 +42,34 @@ api.get('/students', function(req, res, next){
 	.catch(next);
 })
 
-
+router.get('/', function(req,res,next){
+	res.send('hi');
+})
 
 
 //post routes 
 
-api.post('/campuses', function(req,res,next){
+router.post('api/campuses', function(req,res,next){
 	var name = req.body.name;
-	var motto = req.body.motto;
+	var image; //WHAT DO I DO WITH THE IMAGE 
 
 	Campus.create({
 		name: name, 
-		motto: motto
+		//image:image ???
 	}).then(function(campus){
 		res.json(campus);
 	})
 	.catch(next);
 })
 
-api.post('/students', function(req,res,next){
+router.post('api/students', function(req,res,next){
 	var name = req.body.name;
 	var email = req.body.email; 
-	
+	//don't forget to set campus! 
 	User.create({
 		name: name, 
 		email: email
-		
+		//CAMPUS????
 	}).then(function(student){
 		res.json(student);
 	})
@@ -82,7 +78,7 @@ api.post('/students', function(req,res,next){
 
 //put routes 
 
-api.put('/students/:studentId', function(req,res,next){
+router.put('api/students/:studentId', function(req,res,next){
 	let id = req.params.studentId
 
 	User.findById(id)
@@ -94,7 +90,7 @@ api.put('/students/:studentId', function(req,res,next){
 	.catch(next);
 })
 
-api.put('/campuses/:campusId', function(req,res,next){
+router.put('api/campuses/:campusId', function(req,res,next){
 	let id = req.params.campusId
 
 	Campus.findById(id)
@@ -108,7 +104,7 @@ api.put('/campuses/:campusId', function(req,res,next){
 
 //delete routes
 
-api.delete('/campuses/:campusId', function(req,res,next){
+router.delete('api/campuses/:campusId', function(req,res,next){
 	let id = req.params.campusId; 
 	Campus.destroy({
 		where:{
@@ -119,7 +115,7 @@ api.delete('/campuses/:campusId', function(req,res,next){
 
 })
 
-api.delete('/students/:studentId', function(req,res,next){
+router.delete('api/students/:studentId', function(req,res,next){
 	let id = req.params.studentId;
 	User.destroy({
 		where:{
@@ -131,5 +127,6 @@ api.delete('/students/:studentId', function(req,res,next){
 
 
 
-module.exports = api
 
+
+// REMEMBER ERROR HANDLING.catch(err)

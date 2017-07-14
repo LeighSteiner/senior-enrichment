@@ -9,5 +9,5 @@ import Root from './components/Root'
 
 render (
     <Main />,
-  document.getElementById('main')
+  document.getElementById('app')
 )
